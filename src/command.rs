@@ -17,6 +17,10 @@ pub fn filefinder_cmd() -> Command {
             .short('r')
             .required(false)
             .action(ArgAction::SetTrue))
+        .arg(Arg::new("extension")
+            .short('e')
+            .required(false)
+            .action(ArgAction::Set))
         .arg(Arg::new("query")
             .required(true));
 
@@ -24,5 +28,10 @@ pub fn filefinder_cmd() -> Command {
 }
 
 pub fn get_argument_value<'a>(arg_matches: &'a ArgMatches, argument_name: &str) -> &'a str {
-    arg_matches.get_raw(argument_name).expect("").next().expect("Argument value is required").to_str().unwrap()
+    let raw = arg_matches.get_raw(argument_name);
+    if let Some(mut value) = raw {
+        value.next().expect("Argument value is required").to_str().unwrap()
+    } else {
+        ""
+    }
 }
