@@ -1,11 +1,10 @@
-use clap::Command;
 use std::collections::HashMap;
 
 mod command;
 
 
 fn main() {
-    let filefinder_cmd: Command = command::filefinder_cmd();
+    let filefinder_cmd = command::filefinder_cmd();
 
     let matches = filefinder_cmd.clone().get_matches();
     
