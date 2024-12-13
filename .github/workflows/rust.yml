@@ -10,7 +10,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  lint-build-test:
 
     runs-on: ubuntu-latest
 
@@ -20,5 +20,5 @@ jobs:
       run: cargo clippy
     - name: Build
       run: cargo build --verbose
-    - name: Run tests
+    - name: Test
       run: cargo test --verbose
