@@ -1,21 +1,13 @@
 use std::collections::HashMap;
+use crate::command::extract_args;
 
 mod command;
-
+mod validation;
 
 fn main() {
     let filefinder_cmd = command::filefinder_cmd();
 
-    let matches = filefinder_cmd.clone().get_matches();
-
-    let mut args_map: HashMap<&str, &str> = HashMap::new();
-
-    for argument in filefinder_cmd.get_arguments() {
-        let arg_value = command::get_argument_value(&matches, argument.get_id().as_ref());
-        if !arg_value.is_empty() {
-            args_map.insert(argument.get_id().as_ref(), arg_value);
-        }
-    }
+    let args_map: HashMap<String, String> = extract_args(&filefinder_cmd);
 
     println!("Args: {:?}", args_map);
 }
