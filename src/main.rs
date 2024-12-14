@@ -3,6 +3,7 @@ use crate::command::extract_args;
 
 mod command;
 mod validation;
+mod crawler;
 
 fn main() {
     let filefinder_cmd = command::filefinder_cmd();
