@@ -14,11 +14,25 @@ fn crawl_directory(directory: &str, recursive: bool) -> Filter<IntoIter, fn(&Res
     crawl.into_iter().filter(|e: &Result<DirEntry, Error>| e.is_ok() && e.as_ref().unwrap().path().is_dir())
 }
 
-pub fn search_by_filename(directory: &str, query: &str, recursive: bool, _extension: Option<&String>) -> Option<String> {
+fn is_correct_extension(entry: &DirEntry, extension: Option<&String>) -> bool {
+    if extension.is_none() {
+        return true;
+    }
+
+    let ext = entry.path().extension();
+    if ext.is_none() {
+        // We could theoretically search for a file without extension 
+        return extension.unwrap().is_empty();
+    }
+
+    ext.unwrap() == extension.unwrap().as_str()
+}
+
+pub fn search_by_filename(directory: &str, query: &str, recursive: bool, extension: Option<&String>) -> Option<String> {
     let re = Regex::new(query).unwrap();
 
     for entry in crawl_directory(directory, recursive).filter_map(|e| e.ok()) {
-        if re.is_match(entry.path().file_name().unwrap().to_str().unwrap()) {
+        if is_correct_extension(&entry, extension) && re.is_match(entry.path().file_name().unwrap().to_str().unwrap()) {
             return Some(entry.path().to_str().unwrap().to_string());
         }
     }
@@ -26,7 +40,7 @@ pub fn search_by_filename(directory: &str, query: &str, recursive: bool, _extens
     None
 }
 
-pub fn search_by_contents(directory: &str, query: &str, recursive: bool, _extension: Option<&String>) -> Option<String> {
+pub fn search_by_contents(directory: &str, query: &str, recursive: bool, extension: Option<&String>) -> Option<String> {
     let re = Regex::new(query).unwrap();
 
     for entry in crawl_directory(directory, recursive).filter_map(|e| e.ok()) {
@@ -35,7 +49,7 @@ pub fn search_by_contents(directory: &str, query: &str, recursive: bool, _extens
             continue
         }
 
-        if re.is_match(file_contents.unwrap().as_str()) {
+        if is_correct_extension(&entry, extension) && re.is_match(file_contents.unwrap().as_str()) {
             return Some(entry.path().to_str().unwrap().to_string());
         }
     }
