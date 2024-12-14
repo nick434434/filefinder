@@ -1,7 +1,8 @@
-use std::collections::HashMap;
+use dirs::home_dir;
 use clap::{Arg, ArgAction, ArgMatches};
 use clap::Command;
-use crate::validation::validate;
+use crate::validation;
+use std::collections::HashMap;
 
 pub fn filefinder_cmd() -> Command {
     let command: Command = Command::new("filefinder")
@@ -43,9 +44,16 @@ pub fn extract_args(command: &Command) -> HashMap<String, String> {
     let mut args_map: HashMap<String, String> = HashMap::new();
 
     for argument in command.clone().get_arguments() {
-        let arg_value = get_argument_value(&matches, argument.get_id().as_ref());
+        let mut arg_value = get_argument_value(&matches, argument.get_id().as_ref());
 
-        validate(argument.get_id().to_string(), arg_value.to_string()).expect("Invalid argument value");
+        if argument.get_id() == "directory" && arg_value.starts_with("~") {
+            arg_value = arg_value.to_string().replace(
+                "~",
+                home_dir().expect("Home directory not found").to_str().expect("Home directory is not a valid string")
+            );
+        }
+
+        validation::validate(argument.get_id().to_string(), arg_value.to_string()).expect("Invalid argument value");
 
         if !arg_value.is_empty() {
             args_map.insert(argument.get_id().to_string(), arg_value.to_string());
