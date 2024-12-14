@@ -11,15 +11,18 @@ fn main() {
 
     println!("Args: {:?}", args_map);
 
-    if args_map.contains_key("name") {
-        let directory = args_map.get("directory").unwrap();
-        let query = args_map.get("query").unwrap();
+    let directory = args_map.get("directory").unwrap();
+    let query = args_map.get("query").unwrap();
+    let extension = if args_map.contains_key("extension") {args_map.get("extension")} else {None};
 
-        let result = crawler::search_by_filename(directory, query);
+    let result: Option<String> = if command::arg_to_bool(args_map.get("name").unwrap())  {
+        crawler::search_by_filename(directory, query, extension)
+    } else {
+        crawler::search_by_contents(directory, query, extension)
+    };
 
-        match result {
-            Some(file) => println!("File found: {}", file),
-            None => println!("File not found")
-        }
+    match result {
+        Some(file) => println!("File found: {}", file),
+        None => println!("File not found")
     }
 }

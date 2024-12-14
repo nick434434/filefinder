@@ -66,3 +66,7 @@ pub fn extract_args(command: &Command) -> HashMap<String, String> {
 
     args_map
 }
+
+pub fn arg_to_bool(arg: &str) -> bool {
+    arg.to_lowercase() == "true"
+}
