@@ -11,7 +11,7 @@ fn crawl_directory(directory: &str, recursive: bool) -> Filter<IntoIter, fn(&Res
         WalkDir::new(directory).max_depth(1)
     };
 
-    crawl.into_iter().filter(|e: &Result<DirEntry, Error>| e.is_ok() && e.as_ref().unwrap().path().is_dir())
+    crawl.into_iter().filter(|e: &Result<DirEntry, Error>| e.is_ok() && !e.as_ref().unwrap().path().is_dir())
 }
 
 fn is_correct_extension(entry: &DirEntry, extension: Option<&String>) -> bool {
