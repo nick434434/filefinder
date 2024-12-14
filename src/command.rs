@@ -23,6 +23,10 @@ pub fn filefinder_cmd() -> Command {
             .short('e')
             .required(false)
             .action(ArgAction::Set))
+        .arg(Arg::new("multiple")
+            .short('m')
+            .required(false)
+            .action(ArgAction::SetTrue))
         .arg(Arg::new("query")
             .required(true));
 
