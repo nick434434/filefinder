@@ -14,11 +14,13 @@ fn main() {
     let directory = args_map.get("directory").unwrap();
     let query = args_map.get("query").unwrap();
     let extension = if args_map.contains_key("extension") {args_map.get("extension")} else {None};
+    let is_recursive = command::arg_to_bool(args_map.get("recursive").unwrap());
+    let is_name = command::arg_to_bool(args_map.get("name").unwrap());
 
-    let result: Option<String> = if command::arg_to_bool(args_map.get("name").unwrap())  {
-        crawler::search_by_filename(directory, query, extension)
+    let result: Option<String> = if is_name  {
+        crawler::search_by_filename(directory, query, is_recursive, extension)
     } else {
-        crawler::search_by_contents(directory, query, extension)
+        crawler::search_by_contents(directory, query, is_recursive, extension)
     };
 
     match result {
